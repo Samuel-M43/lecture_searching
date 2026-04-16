@@ -69,14 +69,27 @@ def measure_binary(seq, target, repeats=5):
     return total / repeats
 
 
+def pattern_search(sequence, pattern):
+    positions = set()
+    seq_len = len(sequence)
+    pattern_len = len(pattern)
+    for i in range(seq_len - pattern_len + 1):
+        if sequence[i:i + pattern_len] == pattern:
+            positions.add(i)
+    return positions
+
+
+
 def main():
     sizes = [100, 500, 1000, 5000, 10000]
     lin_times = []
     bin_times = []
-    data = read_data("sequential.json", "unordered_numbers")
+    dna_seq = read_data("sequential.json", "dna_sequence")
+    positions = pattern_search(dna_seq, "GA")
+    print(positions)
     wanted_num = 70
     ordered_seq = ordered_sequence()
-    positions = linear_search(data, wanted_num)
+
     for n in sizes:
         seq = ordered_sequence()
         lin_t = measure_linear(seq, wanted_num)
@@ -86,10 +99,10 @@ def main():
         print(f"Linear = {lin_t:.8f}s, Bin = {bin_t:.8f}s")
 
     plt.figure(figsize = (10,6))
-    plt.plot(lin_times, sizes, label="Linearne vyhladavanie")
-    plt.plot(bin_times, sizes, label="Binarne vyhladavanie")
-    plt.xlabel("Cas [n]")
-    plt.ylabel("Velkost vstupu")
+    plt.plot(sizes, lin_times, label="Linearne vyhladavanie")
+    plt.plot(sizes, bin_times, label="Binarne vyhladavanie")
+    plt.xlabel("Velkost vstupu")
+    plt.ylabel("Cas [s]")
     plt.title("Porovnanie vyhladavani")
     plt.legend()
     plt.grid(True)
