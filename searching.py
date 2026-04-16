@@ -32,12 +32,31 @@ def linear_search(sequence, number):
     positions_dict = {"Pozicie:": positions, "Pocet vyskytov:": count}
     return positions_dict
 
+
+def binary_search(sequence, number):
+    left = 0
+    right = len(sequence) - 1
+    while left <= right:
+        middle = (left + right) // 2
+        value = sequence[middle]
+        if value == number:
+            return middle
+        elif value < number:
+            left = middle + 1
+        else:
+            right = middle - 1
+
+    return None
+
+
 def main():
     data = read_data("sequential.json", "unordered_numbers")
-    print(data)
-    wanted_num = 9
+    #print(data)
+    wanted_num = 70
     positions = linear_search(data, wanted_num)
-    print(positions)
+    ordered = read_data("sequential.json", "ordered_numbers")
+    bin_search = binary_search(ordered, wanted_num)
+    print(bin_search)
 
 
 if __name__ == '__main__':
