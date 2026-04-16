@@ -20,10 +20,24 @@ def read_data(file_name, field):
         else:
             return None
 
+unordered = read_data("sequential.json", "unordered_numbers")
+
+def linear_search(sequence, number):
+    positions = []
+    for idx, num in enumerate(sequence):
+        if num == number:
+            positions.append(idx)
+
+    count = len(positions)
+    positions_dict = {"Pozicie:": positions, "Pocet vyskytov:": count}
+    return positions_dict
 
 def main():
     data = read_data("sequential.json", "unordered_numbers")
     print(data)
+    wanted_num = 9
+    positions = linear_search(data, wanted_num)
+    print(positions)
 
 
 if __name__ == '__main__':
