@@ -1,5 +1,8 @@
 import os
 import json
+import time
+import matplotlib.pyplot as plt
+from generators import *
 
 # get current working directory path
 cwd_path = os.getcwd()
@@ -20,7 +23,6 @@ def read_data(file_name, field):
         else:
             return None
 
-unordered = read_data("sequential.json", "unordered_numbers")
 
 def linear_search(sequence, number):
     positions = []
@@ -45,18 +47,55 @@ def binary_search(sequence, number):
             left = middle + 1
         else:
             right = middle - 1
-
     return None
+
+def measure_linear(seq, target, repeats=5):
+    total = 0
+    for _ in range(repeats):
+        start = time.perf_counter()
+        linear_search(seq, target)
+        end = time.perf_counter()
+        total += (end - start)
+    return total / repeats
+
+
+def measure_binary(seq, target, repeats=5):
+    total = 0
+    for _ in range(repeats):
+        start = time.perf_counter()
+        binary_search(seq, target)
+        end = time.perf_counter()
+        total += (end - start)
+    return total / repeats
 
 
 def main():
+    sizes = [100, 500, 1000, 5000, 10000]
+    lin_times = []
+    bin_times = []
     data = read_data("sequential.json", "unordered_numbers")
-    #print(data)
     wanted_num = 70
+    ordered_seq = ordered_sequence()
     positions = linear_search(data, wanted_num)
-    ordered = read_data("sequential.json", "ordered_numbers")
-    bin_search = binary_search(ordered, wanted_num)
-    print(bin_search)
+    for n in sizes:
+        seq = ordered_sequence()
+        lin_t = measure_linear(seq, wanted_num)
+        bin_t = measure_binary(seq, wanted_num)
+        lin_times.append(lin_t)
+        bin_times.append(bin_t)
+        print(f"Linear = {lin_t:.8f}s, Bin = {bin_t:.8f}s")
+
+    plt.figure(figsize = (10,6))
+    plt.plot(lin_times, sizes, label="Linearne vyhladavanie")
+    plt.plot(bin_times, sizes, label="Binarne vyhladavanie")
+    plt.xlabel("Cas [n]")
+    plt.ylabel("Velkost vstupu")
+    plt.title("Porovnanie vyhladavani")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
 
 
 if __name__ == '__main__':
